@@ -105,7 +105,6 @@ def load_data():
 
 df, df_clean, label_enc = load_data()
 
-# --- Train Model ---
 @st.cache_resource
 def train_model(df_clean):
     tfidf_genre = TfidfVectorizer()
@@ -121,6 +120,14 @@ def train_model(df_clean):
     artist_tfidf = tfidf_artist.fit_transform(df_clean['artist'])
     lyrics_tfidf = tfidf_lyrics.fit_transform(df_clean['lyrics'].fillna(''))
     album_tfidf = tfidf_album.fit_transform(df_clean['album'])
+
+    # ✅ Tambahkan baris ini untuk mengubah hasil TF-IDF ke DataFrame
+    df_genre = pd.DataFrame(genre_tfidf.toarray(), columns=tfidf_genre.get_feature_names_out(), index=df_clean.index)
+    df_subgenre = pd.DataFrame(subgenre_tfidf.toarray(), columns=tfidf_subgenre.get_feature_names_out(), index=df_clean.index)
+    df_title = pd.DataFrame(title_tfidf.toarray(), columns=tfidf_title.get_feature_names_out(), index=df_clean.index)
+    df_artist = pd.DataFrame(artist_tfidf.toarray(), columns=tfidf_artist.get_feature_names_out(), index=df_clean.index)
+    df_lyrics = pd.DataFrame(lyrics_tfidf.toarray(), columns=tfidf_lyrics.get_feature_names_out(), index=df_clean.index)
+    df_album = pd.DataFrame(album_tfidf.toarray(), columns=tfidf_album.get_feature_names_out(), index=df_clean.index)
 
     features_num = ['tempo', 'duration_ms', 'energy', 'danceability']
     scaler = MinMaxScaler()
